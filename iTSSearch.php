@@ -1,5 +1,4 @@
 <?php
-
 $term = '';
 if (array_key_exists('submit', $_POST)) {
 	$term = $_POST['term'];
