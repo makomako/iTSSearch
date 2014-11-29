@@ -1,6 +1,18 @@
 <?php
 
-class iTSSearchApiParam {
+abstract class baseClass {
+	public function _setParam($paramName, $paramValue) {
+		if (property_exists($this, $paramName)) {
+			// TODO パラメータバリデーションとか
+			$this->$paramName = $paramValue;
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+class iTSSearchApiParam extends baseClass {
 	protected $_ParameterKey;
 	protected $_Description;
 	protected $_Required;
@@ -9,14 +21,24 @@ class iTSSearchApiParam {
 	
 	public function __construct($parameterKey, $description, $required, $values, $valueDescription) {
 		$this->_setParam('_ParameterKey', $parameterKey);
-		return true;
-	}
-	
-	protected function _setParam($paramName, $paramValue) {
-		$this->$paramName = $paramValue;
+		$this->_setParam('_Description', $description);
+		$this->_setParam('_Required', $required);
+		$this->_setParam('_Values', $values);
+		$this->_setParam('_ValuesDescription', $valueDescription);
 		return true;
 	}
 }
+
+class iTSSerchApi extends baseClass {
+	protected $_params;
+	
+	public function __construct() {
+		$this->_setParam('_params', array());
+		$this->_setParam('_params[]', new iTSSearchApiParam('term', 'The URL-encoded text string you want to search for. For example: jack+johnson.', true, '', 'Any URL-encoded text string. Note: URL encoding replaces spaces with the plus (+) character and all characters except the following are encoded: letters, numbers, periods (.), dashes (-), underscores (_), and asterisks (*).'));
+	}
+}
+
+var_dump(new iTSSerchApi());
 
 $iTSSearchApiParam = array();
 $iTSSearchApiParam[] = new iTSSearchApiParam('term', 'The URL-encoded text string you want to search for. For example: jack+johnson.', true, '', 'Any URL-encoded text string. Note: URL encoding replaces spaces with the plus (+) character and all characters except the following are encoded: letters, numbers, periods (.), dashes (-), underscores (_), and asterisks (*).');
