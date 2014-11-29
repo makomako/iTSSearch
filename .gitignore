@@ -3,14 +3,6 @@
 
 .project
 
-.settings/.jsdtscope
-
-*.prefs
-
-*.xml
-
-*.container
-
-*.name
+.settings/*
 
 *.log
