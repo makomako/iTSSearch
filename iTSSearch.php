@@ -1,4 +1,27 @@
 <?php
+
+class iTSSearchApiParam {
+	protected $_ParameterKey;
+	protected $_Description;
+	protected $_Required;
+	protected $_Values;
+	protected $_ValuesDescription;
+	
+	public function __construct($parameterKey, $description, $required, $values, $valueDescription) {
+		$this->_setParam('_ParameterKey', $parameterKey);
+		return true;
+	}
+	
+	protected function _setParam($paramName, $paramValue) {
+		$this->$paramName = $paramValue;
+		return true;
+	}
+}
+
+$iTSSearchApiParam = array();
+$iTSSearchApiParam[] = new iTSSearchApiParam('term', 'The URL-encoded text string you want to search for. For example: jack+johnson.', true, '', 'Any URL-encoded text string. Note: URL encoding replaces spaces with the plus (+) character and all characters except the following are encoded: letters, numbers, periods (.), dashes (-), underscores (_), and asterisks (*).');
+var_dump($iTSSearchApiParam);
+
 $term = '';
 if (array_key_exists('submit', $_POST)) {
 	$term = $_POST['term'];
