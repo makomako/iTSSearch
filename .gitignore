@@ -1,0 +1,16 @@
+
+.buildpath
+
+.project
+
+.settings/.jsdtscope
+
+*.prefs
+
+*.xml
+
+*.container
+
+*.name
+
+*.log
