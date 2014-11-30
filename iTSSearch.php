@@ -1,48 +1,83 @@
 <?php
-
-abstract class baseClass {
-	public function _setParam($paramName, $paramValue) {
-		if (property_exists($this, $paramName)) {
-			// TODO パラメータバリデーションとか
-			$this->$paramName = $paramValue;
-			return true;
-		} else {
-			return false;
-		}
-	}
-}
-
-class iTSSearchApiParam extends baseClass {
+class iTSSearchApiParam {
 	protected $_ParameterKey;
-	protected $_Description;
+//	protected $_Description;
 	protected $_Required;
 	protected $_Values;
-	protected $_ValuesDescription;
+//	protected $_ValuesDescription;
 	
-	public function __construct($parameterKey, $description, $required, $values, $valueDescription) {
-		$this->_setParam('_ParameterKey', $parameterKey);
-		$this->_setParam('_Description', $description);
-		$this->_setParam('_Required', $required);
-		$this->_setParam('_Values', $values);
-		$this->_setParam('_ValuesDescription', $valueDescription);
+//	public function __construct($parameterKey, $description, $required, $values, $valueDescription) {
+	public function __construct($parameterKey, $required, $values) {
+		$this->_ParameterKey = $parameterKey;
+//		$this->_Description =  $description;
+		$this->_Required = $required;
+		$this->_Values = $values;
+//		$this->_ValuesDescription = $valueDescription;
 		return true;
+	}
+	
+	public function setValues($values) {
+		$this->_Values = $values;
+		return true;
+	}
+	
+	public function getParameterKey() {
+		return $this->_ParameterKey;
+	}
+	
+	public function isRequired() {
+		return $this->_Required;
+	}
+	
+	public function getValues() {
+		return $this->_Values;
 	}
 }
 
-class iTSSerchApi extends baseClass {
+class iTSSearchApi {
+	protected $_requestURL;
 	protected $_params;
 	
 	public function __construct() {
-		$this->_setParam('_params', array());
-		$this->_setParam('_params[]', new iTSSearchApiParam('term', 'The URL-encoded text string you want to search for. For example: jack+johnson.', true, '', 'Any URL-encoded text string. Note: URL encoding replaces spaces with the plus (+) character and all characters except the following are encoded: letters, numbers, periods (.), dashes (-), underscores (_), and asterisks (*).'));
+		$this->_requestURL = 'https://itunes.apple.com/search';
+		$this->_params[] = new iTSSearchApiParam('term', true, null);
+		$this->_params[] = new iTSSearchApiParam('country', true, 'jp');
+//		$this->_params[] = new iTSSearchApiParam('media', false, 'all');
+		$this->_params[] = new iTSSearchApiParam('media', false, 'ebook');
+		$this->_params[] = new iTSSearchApiParam('entity', false, null);
+		$this->_params[] = new iTSSearchApiParam('attribute', false, null);
+		$this->_params[] = new iTSSearchApiParam('callback', false, null);
+		$this->_params[] = new iTSSearchApiParam('limit', false, 50);
+		$this->_params[] = new iTSSearchApiParam('lang', false, 'ja_jp');
+		$this->_params[] = new iTSSearchApiParam('version', false, 2);
+		$this->_params[] = new iTSSearchApiParam('explicit', false, 'Yes');
+		
+	}
+	
+	public function setTerm($term) {
+		foreach ($this->_params as $param) {
+			if ($param->getParameterKey() === 'term') {
+				$param->setValues($term);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function getRequestURL() {
+		/** @var iTSSearchApiParam $param */
+		$params = '';
+		foreach ($this->_params as $param) {
+			if (!$param->isRequired() && is_null($param->getValues())) {
+				continue;
+			}
+			$params .= $param->getParameterKey() . '=' . urlencode($param->getValues()) . '&';
+		}
+		return $this->_requestURL . '?' . $params;
 	}
 }
 
-var_dump(new iTSSerchApi());
-
-$iTSSearchApiParam = array();
-$iTSSearchApiParam[] = new iTSSearchApiParam('term', 'The URL-encoded text string you want to search for. For example: jack+johnson.', true, '', 'Any URL-encoded text string. Note: URL encoding replaces spaces with the plus (+) character and all characters except the following are encoded: letters, numbers, periods (.), dashes (-), underscores (_), and asterisks (*).');
-var_dump($iTSSearchApiParam);
+$iTSSearchApi = new iTSSearchApi();
 
 $term = '';
 if (array_key_exists('submit', $_POST)) {
@@ -50,6 +85,9 @@ if (array_key_exists('submit', $_POST)) {
 	$encodedTerm = urlencode(trim($term));
 	$url = "https://itunes.apple.com/search?term={$encodedTerm}&country=jp&lang=ja_jp&limit=200&media=ebook&entity=ebook";
 // 	$url = "https://itunes.apple.com/search?term={$encodedTerm}&country=jp&media=all&limit=200";
+	
+	$iTSSearchApi->setTerm($_POST['term']);
+	$url = $iTSSearchApi->getRequestURL();
 	
 	// 履歴保存
 	$fpw = fopen('./history.log', 'a');
