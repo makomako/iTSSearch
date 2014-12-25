@@ -52,6 +52,7 @@ class iTSSearchApi {
 		$this->_params[] = new iTSSearchApiParam('version', false, 2);
 		$this->_params[] = new iTSSearchApiParam('explicit', false, 'Yes');
 		
+		return ture;
 	}
 	
 	public function setTerm($term) {
