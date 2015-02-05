@@ -1,4 +1,4 @@
-<?php
+<?php	//ふもっふ
 class iTSSearchApiParam {
 	protected $_ParameterKey;
 //	protected $_Description;
