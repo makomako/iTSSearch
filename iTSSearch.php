@@ -1,5 +1,5 @@
 <?php
-class iTSSearchApiParam {	//ねむい
+class iTSSearchApiParam {
 	protected $_ParameterKey;
 //	protected $_Description;
 	protected $_Required;
