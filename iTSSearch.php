@@ -100,6 +100,9 @@ if (array_key_exists('submit', $_POST)) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	$receiveData = curl_exec($curl);
+	
+	
+	
 	curl_close($curl);
 	
 	$data = json_decode($receiveData);
